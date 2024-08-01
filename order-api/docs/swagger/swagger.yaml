@@ -1,0 +1,212 @@
+basePath: /
+definitions:
+  responses.BadRequestError:
+    properties:
+      title:
+        example: Bad request
+        type: string
+    type: object
+  responses.InternalServerErr:
+    properties:
+      title:
+        example: Internal server error
+        type: string
+    type: object
+  responses.NotFoundError:
+    properties:
+      title:
+        example: Not found
+        type: string
+    type: object
+  schema.OrderRequest:
+    properties:
+      item_description:
+        type: string
+      item_price:
+        type: number
+      item_quantity:
+        type: integer
+      user_id:
+        type: string
+    type: object
+  schema.OrderResponse:
+    properties:
+      created_at:
+        type: string
+      item_description:
+        type: string
+      item_price:
+        type: number
+      item_quantity:
+        type: integer
+      order_id:
+        type: string
+      total_value:
+        type: number
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  schema.UpdateOrderRequest:
+    properties:
+      item_description:
+        type: string
+      item_price:
+        type: number
+      item_quantity:
+        type: integer
+    type: object
+host: localhost:3001
+info:
+  contact: {}
+  title: Order API
+  version: "2.0"
+paths:
+  /api/v1/order-api/orders:
+    get:
+      consumes:
+      - application/json
+      description: Get all orders
+      parameters:
+      - description: Order ID
+        in: query
+        name: order-id
+        type: string
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: User ID
+        in: query
+        name: user-id
+        type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/schema.OrderResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErr'
+      summary: Get all orders
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      description: Create a new order
+      parameters:
+      - description: Order Request
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.OrderRequest'
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErr'
+      summary: Create a new order
+      tags:
+      - orders
+  /api/v1/order-api/orders/{order-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a order
+      parameters:
+      - description: Order ID
+        in: path
+        name: order-id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErr'
+      summary: Delete a order
+      tags:
+      - orders
+    get:
+      consumes:
+      - application/json
+      description: Get a oder by ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: order-id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/schema.OrderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.NotFoundError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErr'
+      summary: Get a order by ID
+      tags:
+      - orders
+    put:
+      consumes:
+      - application/json
+      description: Update a order
+      parameters:
+      - description: Order ID
+        in: path
+        name: oder-id
+        required: true
+        type: string
+      - description: Order Request Update
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UpdateOrderRequest'
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErr'
+      summary: Update a order
+      tags:
+      - orders
+produces:
+- application/json
+schemes:
+- http
+swagger: "2.0"

@@ -1,0 +1,206 @@
+basePath: /
+definitions:
+  responses.BadRequestError:
+    properties:
+      title:
+        example: Bad request
+        type: string
+    type: object
+  responses.InternalServerErr:
+    properties:
+      title:
+        example: Internal server error
+        type: string
+    type: object
+  responses.NotFoundError:
+    properties:
+      title:
+        example: Not found
+        type: string
+    type: object
+  schema.UpdateUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  schema.UserRequest:
+    properties:
+      cpf:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+    type: object
+  schema.UserResponse:
+    properties:
+      cpf:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      phone:
+        type: string
+      updated_at:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  title: User API
+  version: "2.0"
+paths:
+  /api/v1/user-api/users:
+    get:
+      consumes:
+      - application/json
+      description: Get all users
+      parameters:
+      - description: Public ID
+        in: query
+        name: public-id
+        type: string
+      - description: Name
+        in: query
+        name: name
+        type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            items:
+              $ref: '#/definitions/schema.UserResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErr'
+      summary: Get all users
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: User Request
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UserRequest'
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErr'
+      summary: Create a new user
+      tags:
+      - users
+  /api/v1/user-api/users/{user-id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user-id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErr'
+      summary: Delete a user
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get a user by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: user-id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/schema.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/responses.NotFoundError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErr'
+      summary: Get a user by ID
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user-id
+        required: true
+        type: string
+      - description: User Request Update
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/schema.UpdateUserRequest'
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.BadRequestError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/responses.InternalServerErr'
+      summary: Update a user
+      tags:
+      - users
+produces:
+- application/json
+schemes:
+- http
+swagger: "2.0"

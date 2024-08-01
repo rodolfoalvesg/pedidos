@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+    redis_user:
+        image: sickp/alpine-redis:3.2.2
+        ports:
+            - "6379:6379"
+        networks:
+            - network_api
+    db_user:
+        image: postgres:latest
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_USER: postgres
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_DB: dev
+        networks:
+            - network_api
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:sha256-fcf6b29cb00f1db56921e6cb47b506e6a207fcaeae777765dfa733dc007513a6
+        environment:
+            - discovery.type=single-node
+            - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+            - ELASTIC_PASSWORD=changeme
+            - ELASTIC_USERNAME=elastic
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - esdata1:/usr/share/elasticsearch/data
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        networks:
+            - network_api
+    app-user:
+        build:
+            context: ./user-api/
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        volumes:
+          - .:/app
+        depends_on:
+            - redis_user
+            - db_user
+            - elasticsearch
+        networks:
+            - network_api
+    app-order:
+        build:
+            context: ./order-api
+            dockerfile: Dockerfile
+        ports:
+            - "3001:3001"
+        volumes:
+          - .:/app
+        depends_on:
+            - redis_user
+            - db_user
+            - elasticsearch
+        networks:
+            - network_api
+volumes:
+    esdata1:
+        driver: local
+
+networks:
+    network_api:
+        driver: bridge
